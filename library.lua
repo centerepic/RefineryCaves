@@ -102,35 +102,36 @@ function Library:MakeDraggable(Instance, Cutoff)
     Instance.Active = true;
 
     local UIS = game:GetService('UserInputService')
+    local frame = Instance
     local dragToggle = nil
     local dragSpeed = 0.25
     local dragStart = nil
     local startPos = nil
     
-    local function updateInput(Input)
-        local delta = Input.Position - dragStart
+    local function updateInput(input)
+        local delta = input.Position - dragStart
         local position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X,
             startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-        game:GetService('TweenService'):Create(Instance, TweenInfo.new(dragSpeed), {Position = position}):Play()
+        game:GetService('TweenService'):Create(frame, TweenInfo.new(dragSpeed), {Position = position}):Play()
     end
     
-    Instance.InputBegan:Connect(function(Input)
-        if (Input.UserInputType == Enum.UserInputType.MouseButton1 or Input.UserInputType == Enum.UserInputType.Touch) then 
+    frame.InputBegan:Connect(function(input)
+        if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) then 
             dragToggle = true
-            dragStart = Input.Position
-            startPos = Instance.Position
-            Input.Changed:Connect(function()
-                if Input.UserInputState == Enum.UserInputState.End then
+            dragStart = input.Position
+            startPos = frame.Position
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
                     dragToggle = false
                 end
             end)
         end
     end)
     
-    UIS.InputChanged:Connect(function(Input)
-        if Input.UserInputType == Enum.UserInputType.MouseMovement or Input.UserInputType == Enum.UserInputType.Touch then
+    UIS.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
             if dragToggle then
-                updateInput(Input)
+                updateInput(input)
             end
         end
     end)

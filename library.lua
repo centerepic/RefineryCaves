@@ -87,7 +87,7 @@ function Library:CreateLabel(Properties, IsHud)
         BackgroundTransparency = 1;
         Font = Enum.Font.Gotham;
         TextColor3 = Library.FontColor;
-        TextSize = 16;
+        TextSize = 15.5;
         RichText = true;
         TextStrokeTransparency = 0;
     });
@@ -490,7 +490,7 @@ do
             PlaceholderText = 'Hex color',
             Text = '#FFFFFF',
             TextColor3 = Library.FontColor;
-            TextSize = 14;
+            TextSize = 13.5;
             RichText = true;
             TextStrokeTransparency = 0;
             TextXAlignment = Enum.TextXAlignment.Left;
@@ -514,7 +514,7 @@ do
             Size = UDim2.new(1, 0, 0, 14);
             Position = UDim2.fromOffset(5, 5);
             TextXAlignment = Enum.TextXAlignment.Left;
-            TextSize = 14;
+            TextSize = 13.5;
             RichText = true;
             Text = ColorPicker.Title,--Info.Default;
             TextWrapped = false;
@@ -736,7 +736,7 @@ do
 
         local DisplayLabel = Library:CreateLabel({
             Size = UDim2.new(1, 0, 1, 0);
-            TextSize = 13;
+            TextSize = 12.5;
             RichText = true;
             Text = Info.Default;
             TextWrapped = true;
@@ -776,7 +776,7 @@ do
         local ContainerLabel = Library:CreateLabel({
             TextXAlignment = Enum.TextXAlignment.Left;
             Size = UDim2.new(1, 0, 0, 18);
-            TextSize = 13;
+            TextSize = 12.5;
             RichText = true;
             Visible = false;
             ZIndex = 110;
@@ -791,7 +791,7 @@ do
 
             local Label = Library:CreateLabel({
                 Size = UDim2.new(1, 0, 0, 15);
-                TextSize = 13;
+                TextSize = 12.5;
                 RichText = true;
                 Text = Mode;
                 ZIndex = 16;
@@ -1035,7 +1035,7 @@ do
 
         local TextLabel = Library:CreateLabel({
             Size = UDim2.new(1, -4, 0, 15);
-            TextSize = 14;
+            TextSize = 13.5;
             Text = Text;
             TextWrapped = DoesWrap or false,
             RichText = true,
@@ -1123,7 +1123,7 @@ do
 
         local ButtonLabel = Library:CreateLabel({
             Size = UDim2.new(1, 0, 1, 0);
-            TextSize = 14;
+            TextSize = 13.5;
             RichText = true;
             Text = Text;
             ZIndex = 6;
@@ -1256,7 +1256,7 @@ do
 
         local InputLabel = Library:CreateLabel({
             Size = UDim2.new(1, 0, 0, 15);
-            TextSize = 14;
+            TextSize = 13.5;
             RichText = true;
             Text = Info.Text;
             TextXAlignment = Enum.TextXAlignment.Left;
@@ -1328,7 +1328,7 @@ do
 
             Text = Info.Default or '';
             TextColor3 = Library.FontColor;
-            TextSize = 14;
+            TextSize = 13.5;
             RichText = true;
             TextStrokeTransparency = 0;
             TextXAlignment = Enum.TextXAlignment.Left;
@@ -1464,7 +1464,7 @@ do
         local ToggleLabel = Library:CreateLabel({
             Size = UDim2.new(0, 216, 1, 0);
             Position = UDim2.new(1, 6, 0, 0);
-            TextSize = 14;
+            TextSize = 13.5;
             RichText = true;
             Text = Info.Text;
             TextXAlignment = Enum.TextXAlignment.Left;
@@ -1569,7 +1569,7 @@ do
         if not Info.Compact then
             Library:CreateLabel({
                 Size = UDim2.new(1, 0, 0, 10);
-                TextSize = 14;
+                TextSize = 13.5;
                 RichText = true;
                 Text = Info.Text;
                 TextXAlignment = Enum.TextXAlignment.Left;
@@ -1634,7 +1634,7 @@ do
 
         local DisplayLabel = Library:CreateLabel({
             Size = UDim2.new(1, 0, 1, 0);
-            TextSize = 14;
+            TextSize = 13.5;
             RichText = true;
             Text = 'Infinite';
             ZIndex = 9;
@@ -1761,7 +1761,7 @@ do
         if not Info.Compact then
             local DropdownLabel = Library:CreateLabel({
                 Size = UDim2.new(1, 0, 0, 10);
-                TextSize = 14;
+                TextSize = 13.5;
                 RichText = true;
                 Text = Info.Text;
                 TextXAlignment = Enum.TextXAlignment.Left;
@@ -1826,7 +1826,7 @@ do
         local ItemList = Library:CreateLabel({
             Position = UDim2.new(0, 5, 0, 0);
             Size = UDim2.new(1, -5, 1, 0);
-            TextSize = 14;
+            TextSize = 13.5;
             RichText = true;
             Text = '--';
             TextXAlignment = Enum.TextXAlignment.Left;
@@ -1964,7 +1964,7 @@ do
                 local ButtonLabel = Library:CreateLabel({
                     Size = UDim2.new(1, -6, 1, 0);
                     Position = UDim2.new(0, 6, 0, 0);
-                    TextSize = 14;
+                    TextSize = 13.5;
                     RichText = true;
                     Text = Value;
                     TextXAlignment = Enum.TextXAlignment.Left;
@@ -2233,7 +2233,7 @@ do
     local WatermarkLabel = Library:CreateLabel({
         Position = UDim2.new(0, 5, 0, 0);
         Size = UDim2.new(1, -4, 1, 0);
-        TextSize = 14;
+        TextSize = 13.5;
         RichText = true;
         TextXAlignment = Enum.TextXAlignment.Left;
         ZIndex = 203;
@@ -2388,7 +2388,7 @@ function Library:Notify(Text, Time)
         Size = UDim2.new(1, -4, 1, 0);
         Text = Text;
         TextXAlignment = Enum.TextXAlignment.Left;
-        TextSize = 14;
+        TextSize = 13.5;
         RichText = true;
         ZIndex = 103;
         Parent = InnerFrame;
@@ -2688,7 +2688,7 @@ function Library:CreateWindow(...)
             local GroupboxLabel = Library:CreateLabel({
                 Size = UDim2.new(1, 0, 0, 18);
                 Position = UDim2.new(0, 4, 0, 2);
-                TextSize = 14;
+                TextSize = 13.5;
                 RichText = true;
                 Text = Info.Name;
                 TextXAlignment = Enum.TextXAlignment.Left;
@@ -2816,7 +2816,7 @@ function Library:CreateWindow(...)
 
                 local ButtonLabel = Library:CreateLabel({
                     Size = UDim2.new(1, 0, 1, 0);
-                    TextSize = 14;
+                    TextSize = 13.5;
                     RichText = true;
                     Text = Name;
                     TextXAlignment = Enum.TextXAlignment.Center;

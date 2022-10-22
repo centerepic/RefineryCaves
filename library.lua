@@ -111,7 +111,7 @@ function Library:MakeDraggable(Instance, Cutoff)
         local delta = Input.Position - dragStart
         local position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X,
             startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-        game:GetService('TweenService'):Create(frame, TweenInfo.new(dragSpeed), {Position = position}):Play()
+        game:GetService('TweenService'):Create(Instance, TweenInfo.new(dragSpeed), {Position = position}):Play()
     end
     
     Instance.InputBegan:Connect(function(Input)

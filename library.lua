@@ -98,11 +98,9 @@ function Library:CreateLabel(Properties, IsHud)
     return Library:Create(_Instance, Properties);
 end;
 
-function Library:MakeDraggable(Instance, Cutoff)
-    Instance.Active = true;
-
+function Library:MakeDraggable(frame, Cutoff)
+    
     local UIS = game:GetService('UserInputService')
-    local frame = Instance
     local dragToggle = nil
     local dragSpeed = 0.25
     local dragStart = nil
@@ -135,6 +133,7 @@ function Library:MakeDraggable(Instance, Cutoff)
             end
         end
     end)
+
 end;
 
 function Library:AddToolTip(InfoStr, HoverInstance)

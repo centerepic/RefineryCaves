@@ -102,7 +102,7 @@ function Library:MakeDraggable(frame, Cutoff)
     
     local UIS = game:GetService('UserInputService')
     local dragToggle = nil
-    local dragSpeed = 0.1
+    local dragSpeed = 0.05
     local dragStart = nil
     local startPos = nil
     

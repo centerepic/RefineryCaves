@@ -30,4 +30,4 @@ lol
 | Visuals | 🟨 |
 
 # Extra
-wasup
+If you want a script with way more features, stability, and a smarter dev, I reccomend you to check out **Arches Systems**

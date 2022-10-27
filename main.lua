@@ -292,7 +292,7 @@ OreTeleports:AddButton('Teleport all owned ores to player', function()
         if v.Name == "MaterialPart" and v:FindFirstChild("Owner") and v.Owner.Value == LocalPlayer and v.Part.Material ~= Enum.Material.Neon then
             local IsFar = true
 
-            if Lastore ~= nil and (v.Part.Position - Lastore).Magnitude < 7 then
+            if Lastore ~= nil and (v.Part.Position - Lastore).Magnitude < 12 then
                 IsFar = false
             end
 
@@ -332,7 +332,7 @@ OreTeleports:AddButton('Teleport all owned ores to plot', function()
         if v.Name == "MaterialPart" and v:FindFirstChild("Owner") and v.Owner.Value == LocalPlayer and v.Part.Material ~= Enum.Material.Neon and (v.Part.Position - Myplot.Position).Magnitude > 80 then
             local IsFar = true
 
-            if Lastore ~= nil and (v.Part.Position - Lastore).Magnitude < 7 then
+            if Lastore ~= nil and (v.Part.Position - Lastore).Magnitude < 12 then
                 IsFar = false
             end
 

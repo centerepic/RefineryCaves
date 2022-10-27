@@ -59,7 +59,7 @@ local t = tostring(tick())
 local Library = loadstring(game:HttpGet('https://raw.githubusercontent.com/centerepic/RefineryCaves/main/library.lua?t='..t))()
 local ThemeManager = loadstring(game:HttpGet(repo .. 'addons/ThemeManager.lua?t='..t))()
 local SaveManager = loadstring(game:HttpGet(repo .. 'addons/SaveManager.lua?t='..t))()
-local Version = "1.9a"
+local Version = "1.2b"
 
 local Window = Library:CreateWindow({
     Title = 'sasware v'..Version.." | Public Build",
@@ -81,7 +81,7 @@ local Hitboxes = {}
 
 -- < Define Coroutines. >
 
-function GetBlueprint(...)
+local function GetBlueprint(...)
     if not game.Players.LocalPlayer.Values.Blueprints:FindFirstChild(...) then
         local BlueprintValue = Instance.new("BoolValue", game.Players.LocalPlayer.Values.Blueprints)
         BlueprintValue.Value = true
@@ -89,14 +89,16 @@ function GetBlueprint(...)
     end
 end
 
+local function RenderWait()
+    game:GetService("RunService").Stepped:Wait()
+end
+
 local AutoBoxCoro = coroutine.create(function()
     while task.wait(3) do
         if Toggles.BoxAutoFarm.Value == true then
             pcall(function()
                 InteractRemote:FireServer()
-                for i,v in pairs(getconnections(DialogFrame:WaitForChild("Yes",5).MouseButton1Click)) do
-                    v:Fire()
-                end
+                firesignal(DialogFrame:WaitForChild("Yes",5).MouseButton1Click)
                 local DeliveryBox = Grabbables:WaitForChild("DeliveryBox",10)
                 wait(1)
                 local GrabPart = DeliveryBox:FindFirstChildOfClass("Part")
@@ -151,121 +153,6 @@ local IdleMoneyCoro = coroutine.create(function()
     end
 end)
 
-local AutoOreCoro = coroutine.create(function()
-    while wait() do
-        pcall(function()
-            if Toggles.OreAutoFarm.Value == true and Options.OreDropdown.Value ~= nil then
-                for _,Node in pairs(workspace.WorldSpawn:GetChildren()) do
-                    if Node.RockString and Node.RockString.Value == Options.OreDropdown.Value then
-
-                        TP(Node.Part.Position + Vector3.new(0,3,0))
-
-                        for _,Ore in pairs(Node.Rock:FindFirstChildOfClass("Model"):GetChildren()) do
-                            if Ore.Name ~= 'Hitbox' and Ore.Name ~= 'Bedrock' then
-                                repeat
-                                task.wait()
-
-                                TargetPart = Ore
-
-                                TP(Ore.Position - Vector3.new(0,3,0))
-
-                                if not LocalPlayer.Character:FindFirstChildOfClass("Tool") then
-                                    local TTE
-                                    for _,Tool in pairs(LocalPlayer.Backpack:GetChildren()) do
-                                        if Tool.Name:find("Pickaxe") then
-                                            if TTE ~= nil then
-                                                if Tool.Configuration and Tool.Configuration.Tier and Tool.Configuration.Tier.Value > TTE.Configuration.Tier.Value then
-                                                    TTE = Tool
-                                                end
-                                            else
-                                                TTE = Tool
-                                            end
-                                        end
-                                    end
-                                    LocalPlayer.Character.Humanoid:EquipTool(TTE)
-                                end
-
-                                LocalPlayer.Character:FindFirstChildOfClass("Tool"):Activate()
-                                until
-                                Ore.Parent ~= Node.Rock:FindFirstChildOfClass("Model") or (Toggles.OreAutoFarm.Value == false or Options.OreDropdown.Value == nil)
-                            end
-                        end
-                    end
-                end
-                TargetPart = nil
-            end
-        end)
-    end
-end)
-
--- local function FillBlueprints(Table)
---     print("Filling blueprints!")
---     for i,v in pairs(Table) do
---         repeat
---             wait()
---             if Options.BlueprintMaterial.Value then
---                 print("Blueprint Material VALID.")
---                 for _,Node in pairs(workspace.WorldSpawn:GetChildren()) do
---                     if Node.RockString and Options.BlueprintMaterial.Value == Node.RockString.Value then
---                         print("Found a valid node!")
-
---                         TP(Node.Part.Position + Vector3.new(0,3,0))
-
---                         for _,Ore in pairs(Node.Rock:FindFirstChildOfClass("Model"):GetChildren()) do
---                             if Ore.Name ~= 'Hitbox' and Ore.Name ~= 'Bedrock' then
---                                 repeat
---                                 task.wait()
-
---                                 TargetPart = Ore
-
---                                 TP(Ore.Position - Vector3.new(0,3,0))
-
---                                 if not LocalPlayer.Character:FindFirstChildOfClass("Tool") then
---                                     local TTE
---                                     for _,Tool in pairs(LocalPlayer.Backpack:GetChildren()) do
---                                         if Tool.Name:find("Pickaxe") then
---                                             if TTE ~= nil then
---                                                 if Tool.Configuration and Tool.Configuration.Tier and Tool.Configuration.Tier.Value > TTE.Configuration.Tier.Value then
---                                                     TTE = Tool
---                                                 end
---                                             else
---                                                 TTE = Tool
---                                             end
---                                         end
---                                     end
---                                     LocalPlayer.Character.Humanoid:EquipTool(TTE)
---                                 end
-
---                                 LocalPlayer.Character:FindFirstChildOfClass("Tool"):Activate()
---                                 until
---                                 Ore.Parent ~= Node.Rock:FindFirstChildOfClass("Model") or (Options.BlueprintMaterial.Value == nil)
---                             end
---                         end
---                     end
---                 end
---             end
-
---             print("Mined!")
-
---             for _,grabable in pairs(workspace.Grabable:GetChildren()) do
---                 if grabable.Name == "MaterialPart" and grabable:FindFirstChild("Owner") and grabable.Owner.Value == LocalPlayer then
---                     print("found valid grabbable, checking if right material....")
---                     if grabable:FindFirstChild("Configuration") and Options.BlueprintMaterial.Value:find(grabable.Configuration:FindFirstChild("Data").MatInd.Value) then
---                         print("TPING x1 valid grabbable.")
---                         TP(grabable.Part)
---                         wait(0.2)
---                         grabable:PivotTo(v.Part)
---                     end
---                 end
---             end
-
---             TargetPart = nil
---         until v:FindFirstChild("Blueprint") == nil or Options.BlueprintMaterial.Value == nil
---     end
--- end
-
--- broken unfinished code above (shield your eyes)
-
 -- < Define Coroutines. />
 
 
@@ -292,7 +179,7 @@ OreTeleports:AddButton('Teleport all owned ores to player', function()
         if v.Name == "MaterialPart" and v:FindFirstChild("Owner") and v.Owner.Value == LocalPlayer and v.Part.Material ~= Enum.Material.Neon then
             local IsFar = true
 
-            if Lastore ~= nil and (v.Part.Position - Lastore).Magnitude < 12 then
+            if Lastore ~= nil and (v.Part.Position - LocalPlayer.Character.HumanoidRootPart.Position).Magnitude < 15 then
                 IsFar = false
             end
 
@@ -304,21 +191,17 @@ OreTeleports:AddButton('Teleport all owned ores to player', function()
 
             if Toggles.TeleportMethod.Value == true and IsFar == true then
                 wait(0.2)
-            else
-                task.wait()
             end
             
             Lastore = v.Part.Position
             v:PivotTo(OP)
-            wait()
+            RenderWait()
         end
     end
     TP(OP)
 end)
 
 OreTeleports:AddButton('Teleport all owned ores to plot', function()
-    local Lastore = nil
-
     local Myplot = nil
 
     for i,v in pairs(game:GetService("Workspace").Plots:GetChildren()) do
@@ -332,7 +215,7 @@ OreTeleports:AddButton('Teleport all owned ores to plot', function()
         if v.Name == "MaterialPart" and v:FindFirstChild("Owner") and v.Owner.Value == LocalPlayer and v.Part.Material ~= Enum.Material.Neon and (v.Part.Position - Myplot.Position).Magnitude > 80 then
             local IsFar = true
 
-            if Lastore ~= nil and (v.Part.Position - Lastore).Magnitude < 12 then
+            if Lastore ~= nil and (v.Part.Position - LocalPlayer.Character.HumanoidRootPart.Position).Magnitude < 15 then
                 IsFar = false
             end
 
@@ -344,13 +227,11 @@ OreTeleports:AddButton('Teleport all owned ores to plot', function()
             
             if Toggles.TeleportMethod.Value == true and IsFar == true then
                 wait(0.2)
-            else
-                task.wait()
             end
             
             Lastore = v.Part.Position
             v:PivotTo(Myplot.CFrame + Vector3.new(0,4,0))
-            wait()
+            RenderWait()
         end
     end
     TP(OP)
@@ -359,7 +240,6 @@ end)
 coroutine.resume(AutoMineCoro)
 coroutine.resume(IdleMoneyCoro)
 coroutine.resume(AutoBoxCoro)
-coroutine.resume(AutoOreCoro)
 
 local Teleports = Tabs.Main:AddLeftGroupbox('Teleports')
 
@@ -575,95 +455,8 @@ Toggles.BoxAutoFarm:OnChanged(function()
     end
 end)
 
-AutofarmTab:AddToggle('OreAutoFarm', {
-    Text = 'Auto Mine Ore',
-    Default = false,
-    Tooltip = 'Automatically mines chosen ore.',
-})
-
-Toggles.MineAura:OnChanged(function()
-    if Toggles.OreAutoFarm.Value == true and Toggles.MineAura.Value == true then
-        Toggles.OreAutoFarm:SetValue(false)
-    end
-end)
-
-Toggles.OreAutoFarm:OnChanged(function()
-    if Toggles.OreAutoFarm.Value == true and Toggles.MineAura.Value == true then
-        Toggles.MineAura:SetValue(false)
-    end
-end)
-
--- < Generate Ore List. >
-
-local OreList = {}
-for i,v in pairs(game:GetService("ReplicatedStorage").Mineables:GetChildren()) do
-    if v.Name ~= "NICELY_TILED_COPY_THIS_LOL" and v.Name ~= "Mythril" and v.Name ~= "Funny" and v:FindFirstChild("Stage1") and not v.Name:find("Tree") then
-        table.insert(OreList,v.Name)  -- daz alot of conditionals cuh...
-    end
-end
-
-AutofarmTab:AddDropdown('OreDropdown', {
-    Values = OreList,
-    Default = nil,
-    Multi = false,
-    Text = 'Target Ore',
-    Tooltip = 'List of ores in the game (Automatically updated)',
-})
-
 local BlueprintFillerTab = Tabs.Building:AddLeftGroupbox('Blueprint Filler [adding soon™]')
 Tabs.Stores:AddLeftGroupbox('Auto Buy [adding soon™]')
-
--- BlueprintFillerTab:AddButton("Fill all blueprints with material",function()
---     local bptbl = {}
---     local Myplot = nil
-
---     for i,v in pairs(game:GetService("Workspace").Plots:GetChildren()) do
---         if v.Owner and v.Owner.Value == LocalPlayer then
---             Myplot = v.Base
---         end
---     end
-
---     for i,v in pairs(Myplot:GetChildren()) do
---         if v:FindFirstChild("Blueprint") then
---             table.insert(bptbl,v)
---         end
---     end
-
---     print(#bptbl , "Blueprints unfilled.")
-
---     FillBlueprints(bptbl)
--- end)
-
--- BlueprintFillerTab:AddDropdown('BlueprintMaterial', {
---     Values = OreList,
---     Default = nil,
---     Multi = false,
---     Text = 'Fill Material',
---     Tooltip = 'List of ores in the game (Automatically updated)',
--- })
-
--- broken and i am LAZY to fix.
-
--- < Generate Ore List. />
-
--- < Configure UI (Create tabs, toggles, etc.) />
-
-
--- < Make sure 2 autofarms aren't enabled at once. >
-
-Toggles.OreAutoFarm:OnChanged(function()
-    if Toggles.BoxAutoFarm.Value == true and Toggles.OreAutoFarm.Value == true then
-        Toggles.BoxAutoFarm:SetValue(false)
-    end
-end)
-
-Toggles.BoxAutoFarm:OnChanged(function()
-    if Toggles.BoxAutoFarm.Value == true and Toggles.OreAutoFarm.Value == true then
-        Toggles.OreAutoFarm:SetValue(false)
-    end
-end)
-
--- < Make sure 2 autofarms aren't enabled at once. />
 
 -- < Initialize and configure Linora addons. >
 

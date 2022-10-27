@@ -12,7 +12,9 @@ help with scripting - peke#5904
 
 # Info
 Currently under development, quite a few features missing
+
 readme copied from bordr gui
+
 lol
 
 # Features

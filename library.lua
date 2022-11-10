@@ -98,7 +98,8 @@ function Library:CreateLabel(Properties, IsHud)
     return Library:Create(_Instance, Properties);
 end;
 
-function Library:MakeDraggable(frame, Cutoff)
+function Library:MakeDraggable(Instance, Cutoff)
+    Instance.Active = true;
     
     local UIS = game:GetService('UserInputService')
     local dragToggle = nil
@@ -112,28 +113,35 @@ function Library:MakeDraggable(frame, Cutoff)
             startPos.Y.Scale, startPos.Y.Offset + delta.Y)
         game:GetService('TweenService'):Create(frame, TweenInfo.new(dragSpeed), {Position = position}):Play()
     end
-    
-    frame.InputBegan:Connect(function(input)
-        if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) then 
-            dragToggle = true
-            dragStart = input.Position
-            startPos = frame.Position
-            input.Changed:Connect(function()
-                if input.UserInputState == Enum.UserInputState.End then
-                    dragToggle = false
-                end
-            end)
-        end
-    end)
-    
-    UIS.InputChanged:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-            if dragToggle then
-                updateInput(input)
-            end
-        end
-    end)
 
+   Instance.InputBegan:Connect(function(Input)
+        if Input.UserInputType == Enum.UserInputType.MouseButton1 then
+            
+            local ObjPos = Vector2.new(
+                Mouse.X - Instance.AbsolutePosition.X,
+                Mouse.Y - Instance.AbsolutePosition.Y
+            );
+
+            if ObjPos.Y > (Cutoff or 40) then
+                return;
+            end;
+                
+            local function updateInput(input)
+                local delta = input.Position - dragStart
+                local position = UDim2.new(0,
+                    Mouse.X - ObjPos.X + (Instance.Size.X.Offset * Instance.AnchorPoint.X),
+                    0,
+                    Mouse.Y - ObjPos.Y + (Instance.Size.Y.Offset * Instance.AnchorPoint.Y),
+                game:GetService('TweenService'):Create(Instance, TweenInfo.new(dragSpeed), {Position = position}):Play()
+            end
+
+            while InputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton1) do
+                updateInput(Mouse)
+                RenderStepped:Wait();
+            end;
+            
+        end;
+    end)
 end;
 
 function Library:AddToolTip(InfoStr, HoverInstance)

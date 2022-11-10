@@ -2997,4 +2997,10 @@ function Library:CreateWindow(...)
     return Window;
 end;
 
+delay(1,function()
+local HT = TweenService:Create(Highlight,TweenInfo.new(2,Enum.EasingStyle.Quad),{BackgroundColor3 = Library.AccentColor})
+Highlight.BackgroundColor3 = Library.AccentColor + Color3.new(0.807843, 0.807843, 0.807843)
+HT:Play()
+end)
+
 return Library

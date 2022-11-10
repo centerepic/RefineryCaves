@@ -85,9 +85,9 @@ end;
 function Library:CreateLabel(Properties, IsHud)
     local _Instance = Library:Create('TextLabel', {
         BackgroundTransparency = 1;
-        Font = Enum.Font.Code;
+        Font = Enum.Font.Gotham;
         TextColor3 = Library.FontColor;
-        TextSize = 16;
+        TextSize = 15.5;
         TextStrokeTransparency = 0;
     });
 
@@ -98,36 +98,46 @@ function Library:CreateLabel(Properties, IsHud)
     return Library:Create(_Instance, Properties);
 end;
 
-function Library:MakeDraggable(Instance, Cutoff)
-    Instance.Active = true;
-
-   Instance.InputBegan:Connect(function(Input)
-        if Input.UserInputType == Enum.UserInputType.MouseButton1 then
-            local ObjPos = Vector2.new(
-                Mouse.X - Instance.AbsolutePosition.X,
-                Mouse.Y - Instance.AbsolutePosition.Y
-            );
-
-            if ObjPos.Y > (Cutoff or 40) then
-                return;
-            end;
-
-            while InputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton1) do
-                Instance.Position = UDim2.new(
-                    0,
-                    Mouse.X - ObjPos.X + (Instance.Size.X.Offset * Instance.AnchorPoint.X),
-                    0,
-                    Mouse.Y - ObjPos.Y + (Instance.Size.Y.Offset * Instance.AnchorPoint.Y)
-                );
-
-                RenderStepped:Wait();
-            end;
-        end;
+function Library:MakeDraggable(frame, Cutoff)
+    
+    local UIS = game:GetService('UserInputService')
+    local dragToggle = nil
+    local dragSpeed = 0.05
+    local dragStart = nil
+    local startPos = nil
+    
+    local function updateInput(input)
+        local delta = input.Position - dragStart
+        local position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X,
+            startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+        game:GetService('TweenService'):Create(frame, TweenInfo.new(dragSpeed), {Position = position}):Play()
+    end
+    
+    frame.InputBegan:Connect(function(input)
+        if (input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch) then 
+            dragToggle = true
+            dragStart = input.Position
+            startPos = frame.Position
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    dragToggle = false
+                end
+            end)
+        end
     end)
+    
+    UIS.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+            if dragToggle then
+                updateInput(input)
+            end
+        end
+    end)
+
 end;
 
 function Library:AddToolTip(InfoStr, HoverInstance)
-    local X, Y = Library:GetTextBounds(InfoStr, Enum.Font.Code, 14);
+    local X, Y = Library:GetTextBounds(InfoStr, Enum.Font.Gotham, 14);
     local Tooltip = Library:Create('Frame', {
         BackgroundColor3 = Library.MainColor,        
         BorderColor3 = Library.OutlineColor,
@@ -142,7 +152,7 @@ function Library:AddToolTip(InfoStr, HoverInstance)
     local Label = Library:CreateLabel({
         Position = UDim2.fromOffset(3, 1),
         Size = UDim2.fromOffset(X, Y);
-        TextSize = 14;
+        TextSize = 13.5;
         Text = InfoStr,
         TextColor3 = Library.FontColor,
         TextXAlignment = Enum.TextXAlignment.Left;
@@ -441,8 +451,8 @@ do
             Parent = HueSelectorOuter;
         });
 
-        local HueTextSize = Library:GetTextBounds('Hex color', Enum.Font.Code, 16) + 3
-        local RgbTextSize = Library:GetTextBounds('255, 255, 255', Enum.Font.Code, 16) + 3
+        local HueTextSize = Library:GetTextBounds('Hex color', Enum.Font.Gotham, 16) + 3
+        local RgbTextSize = Library:GetTextBounds('255, 255, 255', Enum.Font.Gotham, 16) + 3
 
         local HueBoxOuter = Library:Create('Frame', {
             BorderColor3 = Color3.new(0, 0, 0);
@@ -474,12 +484,12 @@ do
             BackgroundTransparency = 1;
             Position = UDim2.new(0, 5, 0, 0);
             Size = UDim2.new(1, -5, 1, 0);
-            Font = Enum.Font.Code;
+            Font = Enum.Font.Gotham;
             PlaceholderColor3 = Color3.fromRGB(190, 190, 190);
             PlaceholderText = 'Hex color',
             Text = '#FFFFFF',
             TextColor3 = Library.FontColor;
-            TextSize = 14;
+            TextSize = 13.5;
             TextStrokeTransparency = 0;
             TextXAlignment = Enum.TextXAlignment.Left;
             ZIndex = 20,
@@ -502,7 +512,7 @@ do
             Size = UDim2.new(1, 0, 0, 14);
             Position = UDim2.fromOffset(5, 5);
             TextXAlignment = Enum.TextXAlignment.Left;
-            TextSize = 14;
+            TextSize = 13.5;
             Text = ColorPicker.Title,--Info.Default;
             TextWrapped = false;
             ZIndex = 16;
@@ -1019,7 +1029,7 @@ do
 
         local TextLabel = Library:CreateLabel({
             Size = UDim2.new(1, -4, 0, 15);
-            TextSize = 14;
+            TextSize = 13.5;
             Text = Text;
             TextWrapped = DoesWrap or false,
             RichText = true,
@@ -1029,7 +1039,7 @@ do
         });
 
         if DoesWrap then
-            local Y = select(2, Library:GetTextBounds(Text, Enum.Font.Code, 14, Vector2.new(TextLabel.AbsoluteSize.X, math.huge)))
+            local Y = select(2, Library:GetTextBounds(Text, Enum.Font.Gotham, 14, Vector2.new(TextLabel.AbsoluteSize.X, math.huge)))
             TextLabel.Size = UDim2.new(1, -4, 0, Y)
         else
             Library:Create('UIListLayout', {
@@ -1048,7 +1058,7 @@ do
             TextLabel.Text = Text
 
             if DoesWrap then
-                local Y = select(2, Library:GetTextBounds(Text, Enum.Font.Code, 14, Vector2.new(TextLabel.AbsoluteSize.X, math.huge)))
+                local Y = select(2, Library:GetTextBounds(Text, Enum.Font.Gotham, 14, Vector2.new(TextLabel.AbsoluteSize.X, math.huge)))
                 TextLabel.Size = UDim2.new(1, -4, 0, Y)
             end
 
@@ -1107,7 +1117,7 @@ do
 
         local ButtonLabel = Library:CreateLabel({
             Size = UDim2.new(1, 0, 1, 0);
-            TextSize = 14;
+            TextSize = 13.5;
             Text = Text;
             ZIndex = 6;
             Parent = ButtonInner;
@@ -1239,7 +1249,7 @@ do
 
         local InputLabel = Library:CreateLabel({
             Size = UDim2.new(1, 0, 0, 15);
-            TextSize = 14;
+            TextSize = 13.5;
             Text = Info.Text;
             TextXAlignment = Enum.TextXAlignment.Left;
             ZIndex = 5;
@@ -1304,13 +1314,13 @@ do
             Position = UDim2.fromOffset(0, 0),
             Size = UDim2.fromScale(5, 1),
             
-            Font = Enum.Font.Code;
+            Font = Enum.Font.Gotham;
             PlaceholderColor3 = Color3.fromRGB(190, 190, 190);
             PlaceholderText = Info.Placeholder or '';
 
             Text = Info.Default or '';
             TextColor3 = Library.FontColor;
-            TextSize = 14;
+            TextSize = 13.5;
             TextStrokeTransparency = 0;
             TextXAlignment = Enum.TextXAlignment.Left;
 
@@ -1445,7 +1455,7 @@ do
         local ToggleLabel = Library:CreateLabel({
             Size = UDim2.new(0, 216, 1, 0);
             Position = UDim2.new(1, 6, 0, 0);
-            TextSize = 14;
+            TextSize = 13.5;
             Text = Info.Text;
             TextXAlignment = Enum.TextXAlignment.Left;
             ZIndex = 6;
@@ -1549,7 +1559,7 @@ do
         if not Info.Compact then
             Library:CreateLabel({
                 Size = UDim2.new(1, 0, 0, 10);
-                TextSize = 14;
+                TextSize = 13.5;
                 Text = Info.Text;
                 TextXAlignment = Enum.TextXAlignment.Left;
                 TextYAlignment = Enum.TextYAlignment.Bottom;
@@ -1613,7 +1623,7 @@ do
 
         local DisplayLabel = Library:CreateLabel({
             Size = UDim2.new(1, 0, 1, 0);
-            TextSize = 14;
+            TextSize = 13.5;
             Text = 'Infinite';
             ZIndex = 9;
             Parent = SliderInner;
@@ -1739,7 +1749,7 @@ do
         if not Info.Compact then
             local DropdownLabel = Library:CreateLabel({
                 Size = UDim2.new(1, 0, 0, 10);
-                TextSize = 14;
+                TextSize = 13.5;
                 Text = Info.Text;
                 TextXAlignment = Enum.TextXAlignment.Left;
                 TextYAlignment = Enum.TextYAlignment.Bottom;
@@ -1803,7 +1813,7 @@ do
         local ItemList = Library:CreateLabel({
             Position = UDim2.new(0, 5, 0, 0);
             Size = UDim2.new(1, -5, 1, 0);
-            TextSize = 14;
+            TextSize = 13.5;
             Text = '--';
             TextXAlignment = Enum.TextXAlignment.Left;
             TextWrapped = true;
@@ -1940,7 +1950,7 @@ do
                 local ButtonLabel = Library:CreateLabel({
                     Size = UDim2.new(1, -6, 1, 0);
                     Position = UDim2.new(0, 6, 0, 0);
-                    TextSize = 14;
+                    TextSize = 13.5;
                     Text = Value;
                     TextXAlignment = Enum.TextXAlignment.Left;
                     ZIndex = 25;
@@ -2208,7 +2218,7 @@ do
     local WatermarkLabel = Library:CreateLabel({
         Position = UDim2.new(0, 5, 0, 0);
         Size = UDim2.new(1, -4, 1, 0);
-        TextSize = 14;
+        TextSize = 13.5;
         TextXAlignment = Enum.TextXAlignment.Left;
         ZIndex = 203;
         Parent = InnerFrame;
@@ -2295,7 +2305,7 @@ function Library:SetWatermarkVisibility(Bool)
 end;
 
 function Library:SetWatermark(Text)
-    local X, Y = Library:GetTextBounds(Text, Enum.Font.Code, 14);
+    local X, Y = Library:GetTextBounds(Text, Enum.Font.Gotham, 14);
     Library.Watermark.Size = UDim2.new(0, X + 15, 0, (Y * 1.5) + 3);
     Library:SetWatermarkVisibility(true)
 
@@ -2303,7 +2313,7 @@ function Library:SetWatermark(Text)
 end;
 
 function Library:Notify(Text, Time)
-    local XSize, YSize = Library:GetTextBounds(Text, Enum.Font.Code, 14);
+    local XSize, YSize = Library:GetTextBounds(Text, Enum.Font.Gotham, 14);
 
     YSize = YSize + 7
 
@@ -2362,7 +2372,7 @@ function Library:Notify(Text, Time)
         Size = UDim2.new(1, -4, 1, 0);
         Text = Text;
         TextXAlignment = Enum.TextXAlignment.Left;
-        TextSize = 14;
+        TextSize = 13.5;
         ZIndex = 103;
         Parent = InnerFrame;
     });
@@ -2522,7 +2532,7 @@ function Library:CreateWindow(...)
             Tabboxes = {};
         };
 
-        local TabButtonWidth = Library:GetTextBounds(Name, Enum.Font.Code, 16);
+        local TabButtonWidth = Library:GetTextBounds(Name, Enum.Font.Gotham, 16);
 
         local TabButton = Library:Create('Frame', {
             BackgroundColor3 = Library.BackgroundColor;
@@ -2661,7 +2671,7 @@ function Library:CreateWindow(...)
             local GroupboxLabel = Library:CreateLabel({
                 Size = UDim2.new(1, 0, 0, 18);
                 Position = UDim2.new(0, 4, 0, 2);
-                TextSize = 14;
+                TextSize = 13.5;
                 Text = Info.Name;
                 TextXAlignment = Enum.TextXAlignment.Left;
                 ZIndex = 5;
@@ -2788,7 +2798,7 @@ function Library:CreateWindow(...)
 
                 local ButtonLabel = Library:CreateLabel({
                     Size = UDim2.new(1, 0, 1, 0);
-                    TextSize = 14;
+                    TextSize = 13.5;
                     Text = Name;
                     TextXAlignment = Enum.TextXAlignment.Center;
                     ZIndex = 7;
